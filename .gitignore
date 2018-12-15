@@ -1,0 +1,8 @@
+dump/ 
+dump.bin
+in.txt
+out.txt
+
+*.exe
+*.obj
+*.py
