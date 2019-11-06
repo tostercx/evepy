@@ -20,7 +20,7 @@ BOOL getEvePath(char *path, DWORD len)
       DWORD type = REG_SZ;
       
       // for steamed versoin on win64
-      res=RegOpenKeyEx(HKEY_LOCAL_MACHINE,"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 8500",0,KEY_ALL_ACCESS | KEY_WOW64_64KEY,&hKey);
+      res=RegOpenKeyEx(HKEY_LOCAL_MACHINE,"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 8500",0,KEY_READ | KEY_WOW64_64KEY,&hKey);
       if(res!=ERROR_SUCCESS) return FALSE;
       
       res=RegQueryValueEx(hKey,"InstallLocation", NULL, &type, (LPBYTE)path, &len);
@@ -32,7 +32,7 @@ BOOL getEvePath(char *path, DWORD len)
 
 int main(int argc, char **argv)
 {
-    char buf[8192];
+    char buf[100000];
     char path[MAX_PATH];
     
     // get EVE path
@@ -48,11 +48,11 @@ int main(int argc, char **argv)
     }
     
     // MUST be dona before loading the dll
-    sprintf(buf, "%s\\code.ccp;%s\\bin", path, path);
+    sprintf(buf, "%s\\code.ccp;%s\\bin64", path, path);
     _putenv_s("PYTHONPATH", buf);
     
     // get python
-    sprintf(buf, "%s\\bin\\python27.dll", path);
+    sprintf(buf, "%s\\bin64\\python27.dll", path);
     hModule = LoadLibrary(buf);
     //PyRun_SimpleFile    = (PYRUN_SIMPLEFILE)    GetProcAddress(hModule, "PyRun_SimpleFile");
     PyRun_SimpleString  = (PYRUN_SIMPLESTRING)  GetProcAddress(hModule, "PyRun_SimpleString");
@@ -71,7 +71,7 @@ int main(int argc, char **argv)
         FILE *fp = fopen(argv[1], "r");
         
         // SimpleFile emulator
-        int len = fread(buf, 1, 8192, fp);
+        int len = fread(buf, 1, 100000, fp);
         buf[len] = 0;
         fclose(fp);
         
